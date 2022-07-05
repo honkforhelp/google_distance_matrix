@@ -29,13 +29,16 @@ module GoogleDistanceMatrix
       protocol: 'https',
       lat_lng_scale: 5,
       filter_parameters_in_logged_url: %w[key signature].freeze,
-      cache_key_transform: ->(url) { Digest::SHA512.new.update(url).to_s }
+      cache_key_transform: ->(url) { Digest::SHA512.new.update(url).to_s },
     }.with_indifferent_access
 
     attr_accessor(*ATTRIBUTES)
 
     # The protocol to use, either http or https
     attr_accessor :protocol
+
+    # Timeout settings for requests:
+    attr_accessor :http_open_timeout, :http_read_timeout, :http_ssl_timeout
 
     # lat_lng_scale is used for each Place when we include it's lat and lng values in the URL.
     # Defaults to 5 decimals, but you can set it lower to save characters in the URL.
@@ -79,6 +82,10 @@ module GoogleDistanceMatrix
               allow_blank: true
 
     validates :protocol, inclusion: { in: %w[http https] }, allow_blank: true
+
+    validates :http_open_timeout, numericality: { greater_than: 0 }, allow_blank: true
+    validates :http_read_timeout, numericality: { greater_than: 0 }, allow_blank: true
+    validates :http_ssl_timeout, numericality: { greater_than: 0 }, allow_blank: true
 
     def initialize
       API_DEFAULTS.each_pair do |attr_name, value|

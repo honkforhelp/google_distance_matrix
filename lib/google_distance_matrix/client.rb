@@ -20,13 +20,25 @@ module GoogleDistanceMatrix
     #                         is using.
     #
     # @return Hash with data from parsed response body
-    def get(url, instrumentation: {}, **_options)
+    def get(url, instrumentation: {}, configuration: nil)
       uri = URI.parse url
 
       response = ActiveSupport::Notifications.instrument(
         'client_request_matrix_data.google_distance_matrix', instrumentation
       ) do
-        Net::HTTP.get_response uri
+        # This is borrowed from HTTP.get_response
+        Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == 'https') do |http|
+          http_open_timeout = configuration&.http_open_timeout.to_i
+          http.open_timeout = http_open_timeout if http_open_timeout > 0
+
+          http_read_timeout = configuration&.http_read_timeout.to_i
+          http.read_timeout = http_read_timeout if http_read_timeout > 0
+
+          http_ssl_timeout = configuration&.http_ssl_timeout.to_i
+          http.ssl_timeout = http_ssl_timeout if http_ssl_timeout > 0
+
+          http.request_get(uri)
+        end
       end
 
       handle response, url

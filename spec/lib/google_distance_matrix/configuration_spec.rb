@@ -59,6 +59,72 @@ describe GoogleDistanceMatrix::Configuration do
 
     it { should validate_inclusion_of(:protocol).in_array(%w[http https]) }
 
+    describe 'http_open_timeout' do
+      it 'is valid with a positive number' do
+        subject.http_open_timeout = 1
+        subject.valid?
+        expect(subject.errors[:http_open_timeout].length).to eq 0
+      end
+
+      it 'is invalid with zero' do
+        subject.http_open_timeout = 0
+        subject.valid?
+        expect(subject.errors[:http_open_timeout].length).to eq 1
+      end
+
+      it 'is invalid with a negative number' do
+        subject.http_open_timeout = -1
+        subject.valid?
+        expect(subject.errors[:http_open_timeout].length).to eq 1
+      end
+
+      it { should allow_value(nil).for(:http_open_timeout) }
+    end
+
+    describe 'http_read_timeout' do
+      it 'is valid with a positive number' do
+        subject.http_read_timeout = 1
+        subject.valid?
+        expect(subject.errors[:http_read_timeout].length).to eq 0
+      end
+
+      it 'is invalid with zero' do
+        subject.http_read_timeout = 0
+        subject.valid?
+        expect(subject.errors[:http_read_timeout].length).to eq 1
+      end
+
+      it 'is invalid with a negative number' do
+        subject.http_read_timeout = -1
+        subject.valid?
+        expect(subject.errors[:http_read_timeout].length).to eq 1
+      end
+
+      it { should allow_value(nil).for(:http_read_timeout) }
+    end
+
+    describe 'http_ssl_timeout' do
+      it 'is valid with a positive number' do
+        subject.http_ssl_timeout = 1
+        subject.valid?
+        expect(subject.errors[:http_ssl_timeout].length).to eq 0
+      end
+
+      it 'is invalid with zero' do
+        subject.http_ssl_timeout = 0
+        subject.valid?
+        expect(subject.errors[:http_ssl_timeout].length).to eq 1
+      end
+
+      it 'is invalid with a negative number' do
+        subject.http_ssl_timeout = -1
+        subject.valid?
+        expect(subject.errors[:http_ssl_timeout].length).to eq 1
+      end
+
+      it { should allow_value(nil).for(:http_ssl_timeout) }
+    end
+
     it { should validate_inclusion_of(:transit_mode).in_array(%w[bus subway train tram rail]) }
     it {
       should validate_inclusion_of(
