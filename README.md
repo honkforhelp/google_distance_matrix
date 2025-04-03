@@ -55,6 +55,13 @@ matrix.configure do |config|
 
   # If you have an API key, you can specify that as well.
   config.google_api_key = "YOUR_API_KEY"
+  
+  # Will cause a timeout if the connection can't be established in 5 seconds:
+  config.http_open_timeout = 5
+  # Will cause a timeout if the SSL handshake takes over 5 seconds:
+  config.http_ssl_timeout = 5
+  # Will cause a timeout if the remote server doesn't start sending data for 20 seconds:
+  config.http_read_timeout = 20
 end
 ```
 ### Get the data for the matrix
